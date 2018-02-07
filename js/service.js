@@ -21,7 +21,7 @@ function Service() {
       myOrders: undefined,
       myTrades: undefined,
     };
-
+    console.log(`Connecting to ${self.config.socketURL}`);
     self.socket = io.connect(self.config.socketURL, { transports: ['websocket'] });
     self.socket.on('connect', () => {
       console.log('socket connected');
@@ -32,9 +32,9 @@ function Service() {
       console.log('socket disconnected');
     });
 
-    setTimeout(() => {
-      reject('Could not connect to socket');
-    }, 10000);
+    // setTimeout(() => {
+    //   reject('Could not connect to socket');
+    // }, 10000);
   });
 
   self.getMarket = (token, user) => {
@@ -62,9 +62,11 @@ function Service() {
           self.updateOrders(market.orders, token, user);
           self.updateTrades(market.trades, token, user);
           self.socket.on('orders', (orders) => {
+            console.log('Updating orders')
             self.updateOrders(orders, token, user);
           });
           self.socket.on('trades', (trades) => {
+            console.log('Updating trades')
             self.updateTrades(trades, token, user);
           });
           resolve();
