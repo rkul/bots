@@ -279,7 +279,7 @@ function Service() {
     });
   });
 
-  self.takeOrder = (user, order, fraction) => new Promise((resolve, reject) => {
+  self.takeOrder = (user, order, fraction, gasPrice, gasLimit) => new Promise((resolve, reject) => {
     self.getNextNonce(user)
     .then((nonce) => {
       const amount = order.amountGet.times(new BigNumber(String(fraction)));
@@ -311,8 +311,8 @@ function Service() {
             order.s,
             amount);
           const options = {
-            gasPrice: self.config.gasPrice,
-            gasLimit: self.config.gasLimit,
+            gasPrice: gasPrice,
+            gasLimit: gasLimit,
             nonce,
             data,
             to: self.config.addressEtherDelta,
