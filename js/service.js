@@ -331,6 +331,67 @@ function Service() {
     });
   });
 
+  self.estimateGas = (user, order) => new Promise((resolve, reject) => {
+    self.getNextNonce(user)
+    .then((nonce) => {
+      const amount = new BigNumber(order.amount);
+      const data = self.contractEtherDelta.trade.getData(
+        order.tokenGet,
+        order.amountGet,
+        order.tokenGive,
+        order.amountGive,
+        order.expires,
+        order.nonce,
+        order.user,
+        order.v,
+        order.r,
+        order.s,
+        amount);
+      const options = {
+        nonce,
+        data,
+        to: self.config.addressEtherDelta,
+      };
+      self.web3.eth.estimateGas({to: self.config.addressEtherDelta, data: data, from: user.addr}, (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    })
+    .catch((err) => {
+      reject(err);
+    });
+  });
+
+  self.testOrder = (user, order) => new Promise((resolve, reject) => {
+    self.getNextNonce(user)
+    .then((nonce) => {
+      const amount = new BigNumber(order.amount);
+      self.contractEtherDelta.testTrade.call(
+        order.tokenGet,
+        order.amountGet,
+        order.tokenGive,
+        order.amountGive,
+        order.expires,
+        order.nonce,
+        order.user,
+        order.v,
+        order.r,
+        order.s,
+        order.amount,
+        user.addr,
+        (errTest, resultTest) => {
+          if (errTest || !resultTest) {
+            reject(errTest)
+          } else {
+            resolve(resultTest);
+          }
+        });
+    })
+    .catch((err) => {
+      reject(err);
+    });
+  });
+
   self.placeOrder = order => new Promise((resolve, reject) => {
     self.socket.emit('message', order);
     self.socket.once('messageResult', (messageResult) => {
