@@ -1,7 +1,7 @@
 const Service = require('./service.js');
 
 const token = {
-  addr: '0x8f3470a7388c05ee4e7af3d01d8c722b0ff52374',
+  addr: '0xe469c4473af82217b30cf17b10bcdb6c8c796e75',
   decimals: 18,
 };
 
@@ -13,7 +13,7 @@ const user = {
 const config = {
   addressEtherDelta: '0x8d12a197cb00d4747a1fe03395095ce2a5cc6819',
   provider: 'https://mainnet.infura.io/Ky03pelFIxoZdAUsr82w',
-  socketURL: 'https://socket.etherdelta.com',
+  socketURL: 'https://socket04.etherdelta.com',
   gasLimit: 150000,
   gasPrice: 4000000000,
 };
@@ -41,10 +41,10 @@ service.init(config)
   console.log(`Best available: Sell ${order.ethAvailableVolume.toFixed(3)} @ ${order.price.toFixed(9)}`);
   const desiredAmountBase = 0.001;
   const fraction = Math.min(desiredAmountBase / order.ethAvailableVolumeBase, 1);
-  return service.takeOrder(user, order, fraction);
+  return service.takeOrder(user, order, fraction, config.gasPrice, config.gasLimit);
 })
 .then((result) => {
-  console.log(result);
+  console.log('Result: '+result);
   process.exit();
 })
 .catch((err) => {
