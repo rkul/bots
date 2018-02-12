@@ -297,7 +297,7 @@ function Service() {
         amount,
         user.addr,
         (errTest, resultTest) => {
-          if (errTest || !resultTest) reject('Order will fail');
+          if (errTest || !resultTest) reject('Order will fail: '+errTest);
           const data = self.contractEtherDelta.trade.getData(
             order.tokenGet,
             order.amountGet,
