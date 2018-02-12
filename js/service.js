@@ -279,10 +279,10 @@ function Service() {
     });
   });
 
-  self.takeOrder = (user, order, fraction, gasPrice, gasLimit) => new Promise((resolve, reject) => {
+  self.takeOrder = (user, order, gasPrice, gasLimit) => new Promise((resolve, reject) => {
     self.getNextNonce(user)
     .then((nonce) => {
-      const amount = order.amountGet.times(new BigNumber(String(fraction)));
+      const amount = new BigNumber(order.amount);
       self.contractEtherDelta.testTrade.call(
         order.tokenGet,
         order.amountGet,
