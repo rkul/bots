@@ -282,7 +282,6 @@ function Service() {
   self.takeOrder = (user, order, gasPrice, gasLimit) => new Promise((resolve, reject) => {
     self.getNextNonce(user)
     .then((nonce) => {
-      const amount = new BigNumber(order.amount);
       self.contractEtherDelta.testTrade.call(
         order.tokenGet,
         order.amountGet,
@@ -294,7 +293,7 @@ function Service() {
         order.v,
         order.r,
         order.s,
-        amount,
+        order.amount,
         user.addr,
         (errTest, resultTest) => {
           if (errTest || !resultTest) reject('Order will fail: '+errTest);
@@ -309,7 +308,7 @@ function Service() {
             order.v,
             order.r,
             order.s,
-            amount);
+            order.amount);
           const options = {
             gasPrice: gasPrice,
             gasLimit: gasLimit,
@@ -334,7 +333,6 @@ function Service() {
   self.estimateGas = (user, order) => new Promise((resolve, reject) => {
     self.getNextNonce(user)
     .then((nonce) => {
-      const amount = new BigNumber(order.amount);
       const data = self.contractEtherDelta.trade.getData(
         order.tokenGet,
         order.amountGet,
@@ -346,12 +344,8 @@ function Service() {
         order.v,
         order.r,
         order.s,
-        amount);
-      const options = {
-        nonce,
-        data,
-        to: self.config.addressEtherDelta,
-      };
+        order.amount
+      );
       self.web3.eth.estimateGas({to: self.config.addressEtherDelta, data: data, from: user.addr}, (err, result) => {
         if (err) reject(err);
         resolve(result);
@@ -365,7 +359,6 @@ function Service() {
   self.testOrder = (user, order) => new Promise((resolve, reject) => {
     self.getNextNonce(user)
     .then((nonce) => {
-      const amount = new BigNumber(order.amount);
       self.contractEtherDelta.testTrade.call(
         order.tokenGet,
         order.amountGet,
