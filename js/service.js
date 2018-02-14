@@ -343,8 +343,7 @@ function Service() {
         order.user,
         order.v,
         order.r,
-        order.s,
-        order.amount
+        order.s
       );
       self.web3.eth.estimateGas({to: self.config.addressEtherDelta, data: data, from: user.addr}, (err, result) => {
         if (err) reject(err);
